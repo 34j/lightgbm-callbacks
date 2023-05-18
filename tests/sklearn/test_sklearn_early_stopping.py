@@ -11,6 +11,7 @@ import tqdm
 import tqdm.rich
 from lightgbm import LGBMRegressor
 from parameterized import parameterized_class
+from sklearn import clone
 from sklearn.datasets import load_diabetes
 from sklearn.metrics import mean_squared_error
 from sklearn.model_selection import train_test_split
@@ -34,6 +35,12 @@ class TestEarlyStoppingCallback(TestCase):
 
     def setUp(self) -> None:
         self.X, self.y = load_diabetes(return_X_y=True)
+
+    def test_clone(self) -> None:
+        gbm = LGBMDartEarlyStoppingEstimator(LGBMRegressor(), tqdm_cls="auto")
+        clone(gbm)
+        gbm.fit(self.X, self.y)
+        clone(gbm)
 
     def test_performance(self) -> None:
         DEBUG = not IS_GITHUB_CI
@@ -92,6 +99,8 @@ class TestEarlyStoppingCallback(TestCase):
             y_pred = gbm.predict(X_test)
             y_preds[k] = y_pred
             scores[k] = mean_squared_error(y_test, y_pred)
+            if isinstance(gbm, LGBMDartEarlyStoppingEstimator):
+                gbm = gbm.estimator
             lgb.plot_importance(gbm)
             lgb.plot_split_value_histogram(gbm, feature=0)
             lgb.plot_metric(gbm, metric="l2", title=f"Metric during training ({k})")
