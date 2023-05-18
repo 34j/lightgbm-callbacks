@@ -1,9 +1,12 @@
 from __future__ import annotations
 
+import os
 from unittest import TestCase
 
 import lightgbm as lgb
 import matplotlib.pyplot as plt
+import matplotlib.style
+import matplotx.styles
 import tqdm
 import tqdm.rich
 from lightgbm import LGBMRegressor
@@ -13,6 +16,8 @@ from sklearn.metrics import mean_squared_error
 from sklearn.model_selection import train_test_split
 
 from lightgbm_callbacks import LGBMDartEarlyStoppingEstimator
+
+IS_GITHUB_CI = os.environ.get("GITHUB_ACTIONS") == "true"
 
 
 @parameterized_class(
@@ -31,6 +36,11 @@ class TestEarlyStoppingCallback(TestCase):
         self.X, self.y = load_diabetes(return_X_y=True)
 
     def test_performance(self) -> None:
+        DEBUG = not IS_GITHUB_CI
+        if DEBUG:
+            self.n_estimators = 1000
+            matplotlib.style.use(matplotx.styles.dracula)
+
         X_train, X_test, y_train, y_test = train_test_split(
             self.X, self.y, random_state=0
         )
@@ -64,8 +74,6 @@ class TestEarlyStoppingCallback(TestCase):
             }
         )
 
-        DEBUG = False
-
         y_preds = {}
         scores = {}
         for k, gbm in gbms.items():
@@ -86,7 +94,7 @@ class TestEarlyStoppingCallback(TestCase):
             scores[k] = mean_squared_error(y_test, y_pred)
             lgb.plot_importance(gbm)
             lgb.plot_split_value_histogram(gbm, feature=0)
-            lgb.plot_metric(gbm, metric="l2")
+            lgb.plot_metric(gbm, metric="l2", title=f"Metric during training ({k})")
             if DEBUG:
                 lgb.plot_tree(gbm, tree_index=0)
             if not DEBUG:
@@ -96,7 +104,8 @@ class TestEarlyStoppingCallback(TestCase):
             # It is too difficult to test if "none" mode works correctly.
 
         if DEBUG:
-            plt.show()
+            for fignum in plt.get_fignums():
+                plt.figure(fignum).savefig(f"tests/test_{fignum}.png")
 
         # "refit" < "refit_like_save" == "save" < "none" < "baseline"
         print(scores)
