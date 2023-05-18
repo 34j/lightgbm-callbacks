@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from unittest import TestCase
 
 import tqdm
@@ -65,7 +67,7 @@ class TestProgressBarCallback(TestCase):
         callback = ProgressBarCallback(
             self.tqdm_cls,
             early_stopping_callback=early_stopping_callback,
-            **self.tqdm_kwargs
+            **self.tqdm_kwargs,
         )
         clf.fit(
             X_train,
