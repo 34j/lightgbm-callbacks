@@ -43,10 +43,11 @@ class EstimatorWrapperBase(BaseEstimator, RegressorMixin, Generic[TEstimator]):
     # Due to the bug in Python, __instancecheck__ does not work.
     # https://bugs.python.org/issue35083
 
-    @property
+    # This makes the class sklearn.clone() incompatible.
+    """@property
     def __class__(self) -> Any:
         return self.estimator.__class__
 
     @__class__.setter
     def __class__(self, __class__: Any) -> None:  # noqa
-        self.estimator.__class__ = __class__
+        self.estimator.__class__ = __class__"""

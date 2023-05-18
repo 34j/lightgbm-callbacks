@@ -12,7 +12,7 @@ class TestEstimatorWrapperBase(TestCase):
         self.assertIsInstance(
             EstimatorWrapperBase(LGBMRegressor()), EstimatorWrapperBase
         )
-        self.assertIsInstance(EstimatorWrapperBase(LGBMRegressor()), LGBMRegressor)
+        self.assertNotIsInstance(EstimatorWrapperBase(LGBMRegressor()), LGBMRegressor)
 
     def test_issubclass(self) -> None:
         self.assertFalse(issubclass(EstimatorWrapperBase, LGBMRegressor))
