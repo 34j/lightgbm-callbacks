@@ -42,22 +42,25 @@ class TestEarlyStoppingCallback(TestCase):
                 verbose=-1,
                 boosting_type="dart",
             )
-        } | {
-            method: LGBMDartEarlyStoppingEstimator(
-                LGBMRegressor(
-                    n_estimators=self.n_estimators,
-                    learning_rate=1e-1,
-                    metric=self.metric,
-                    verbose=-1,
-                    boosting_type="dart",
-                ),
-                stopping_rounds=30,
-                dart_early_stopping_method=method,  # type: ignore
-                random_state=0,
-                metric_idx=-1,
-            )
-            for method in ["refit", "refit_like_save", "save", "none"]
         }
+        gbms.update(
+            {
+                method: LGBMDartEarlyStoppingEstimator(
+                    LGBMRegressor(
+                        n_estimators=self.n_estimators,
+                        learning_rate=1e-1,
+                        metric=self.metric,
+                        verbose=-1,
+                        boosting_type="dart",
+                    ),
+                    stopping_rounds=30,
+                    dart_early_stopping_method=method,  # type: ignore
+                    random_state=0,
+                    metric_idx=-1,
+                )
+                for method in ["refit", "refit_like_save", "save", "none"]
+            }
+        )
 
         DEBUG = False
 
