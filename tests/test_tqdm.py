@@ -47,7 +47,7 @@ class TestProgressBarCallback(TestCase):
             callbacks=[callback],
         )
 
-        self.assertTrue(issubclass(callback.tqdm_cls, tqdm.std.tqdm))
+        self.assertTrue(issubclass(callback.tqdm_cls, tqdm.std.tqdm))  # type: ignore
         self.assertIsInstance(callback.pbar, tqdm.std.tqdm)
         assert callback.pbar is not None
         self.assertEqual(callback.pbar.total, self.n_estimators)
