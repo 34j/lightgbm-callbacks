@@ -81,9 +81,10 @@ class TestEarlyStoppingCallback(TestCase):
             y_preds[k] = y_pred
             scores[k] = mean_squared_error(y_test, y_pred)
             lgb.plot_importance(gbm)
-            # lgb.plot_split_value_histogram(gbm, feature=0)
+            lgb.plot_split_value_histogram(gbm, feature=0)
             lgb.plot_metric(gbm, metric="l2")
-            lgb.plot_tree(gbm, tree_index=0)
+            if DEBUG:
+                lgb.plot_tree(gbm, tree_index=0)
             if not DEBUG:
                 plt.close("all")
             # There seem to be no way to get the actual trained number of trees
