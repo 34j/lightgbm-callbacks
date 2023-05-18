@@ -3,6 +3,7 @@ from __future__ import annotations
 import warnings
 from typing import Any, Callable, Literal
 
+import tqdm
 from lightgbm import LGBMModel, log_evaluation
 from lightgbm.callback import CallbackEnv
 from numpy.typing import NDArray
@@ -41,6 +42,25 @@ class LGBMEarlyStoppingEstimator(EstimatorWrapperBase[LGBMModel]):
         shuffle: bool = True,
         stratify: bool = False,
         split_enabled: bool = True,
+        tqdm_cls: Literal[
+            "auto",
+            "autonotebook",
+            "std",
+            "notebook",
+            "asyncio",
+            "keras",
+            "dask",
+            "tk",
+            "gui",
+            "rich",
+            "contrib.slack",
+            "contrib.discord",
+            "contrib.telegram",
+            "contrib.bells",
+        ]
+        | type[tqdm.std.tqdm]
+        | None = None,
+        tqdm_kwargs: dict[str, Any] | None = None,
         **kwargs: Any,
     ) -> None:
         """LightGBM wrapper that does early stopping with sklearn.train_test_split.
@@ -90,6 +110,12 @@ class LGBMEarlyStoppingEstimator(EstimatorWrapperBase[LGBMModel]):
             y must be categorical. by default False
         split_enabled : bool, optional
             Whether to use train_test_split or not, by default True
+        tqdm_cls : Literal['auto', 'autonotebook', 'std', 'notebook', 'asyncio',
+        'keras', 'dask', 'tk', 'gui', 'rich', 'contrib.slack', 'contrib.discord',
+        'contrib.telegram', 'contrib.bells'] or type[tqdm.std.tqdm] or None, optional
+            The tqdm class or module name, by default 'auto'
+        tqdm_kwargs : dict[str, Any] or None, optional
+            The keyword arguments passed to the tqdm class initializer, by default None
         **kwargs : Any
             Other parameters passed to the estimator.
         """
@@ -106,6 +132,8 @@ class LGBMEarlyStoppingEstimator(EstimatorWrapperBase[LGBMModel]):
         self.shuffle = shuffle
         self.stratify = stratify
         self.split_enabled = split_enabled
+        self.tqdm_cls = tqdm_cls
+        self.tqdm_kwargs = tqdm_kwargs
         self.kwargs = kwargs
         for key, value in kwargs.items():
             if key not in [
@@ -154,6 +182,14 @@ class LGBMEarlyStoppingEstimator(EstimatorWrapperBase[LGBMModel]):
             for callback in fit_params["callbacks"]:
                 if isinstance(callback, ProgressBarCallback):
                     callback.early_stopping_callback = early_stopping
+            if self.tqdm_cls is not None:
+                fit_params["callbacks"].append(
+                    ProgressBarCallback(
+                        tqdm_cls=self.tqdm_cls,
+                        early_stopping_callback=early_stopping,
+                        **(self.tqdm_kwargs or {}),
+                    )
+                )
         self.estimator.fit(
             X_train,
             y_train,
@@ -191,6 +227,25 @@ class LGBMDartEarlyStoppingEstimator(LGBMEarlyStoppingEstimator):
         split_enabled: bool = True,
         dart_early_stopping_method: Literal["save", "refit", "none"] = "save",
         metric_idx: int = -1,
+        tqdm_cls: Literal[
+            "auto",
+            "autonotebook",
+            "std",
+            "notebook",
+            "asyncio",
+            "keras",
+            "dask",
+            "tk",
+            "gui",
+            "rich",
+            "contrib.slack",
+            "contrib.discord",
+            "contrib.telegram",
+            "contrib.bells",
+        ]
+        | type[tqdm.std.tqdm]
+        | None = None,
+        tqdm_kwargs: dict[str, Any] | None = None,
         **kwargs: Any,
     ) -> None:
         """LightGBM wrapper that does early stopping with sklearn.train_test_split
@@ -245,6 +300,12 @@ class LGBMDartEarlyStoppingEstimator(LGBMEarlyStoppingEstimator):
             Method to use for early stopping, by default "save"
         metric_idx : int, optional
             Index of the metric to use for early stopping, by default 0
+        tqdm_cls : Literal['auto', 'autonotebook', 'std', 'notebook', 'asyncio',
+        'keras', 'dask', 'tk', 'gui', 'rich', 'contrib.slack', 'contrib.discord',
+        'contrib.telegram', 'contrib.bells'] or type[tqdm.std.tqdm] or None, optional
+            The tqdm class or module name, by default 'auto'
+        tqdm_kwargs : dict[str, Any] or None, optional
+            The keyword arguments passed to the tqdm class initializer, by default None
         **kwargs : Any
             Other parameters passed to the estimator.
         """
@@ -262,6 +323,8 @@ class LGBMDartEarlyStoppingEstimator(LGBMEarlyStoppingEstimator):
             shuffle=shuffle,
             stratify=stratify,
             split_enabled=split_enabled,
+            tqdm_cls=tqdm_cls,
+            tqdm_kwargs=tqdm_kwargs,
             **kwargs,
         )
         self.dart_early_stopping_method = dart_early_stopping_method

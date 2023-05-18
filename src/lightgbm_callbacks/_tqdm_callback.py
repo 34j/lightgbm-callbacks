@@ -12,7 +12,7 @@ from ._base import CallbackBase
 
 
 class ProgressBarCallback(CallbackBase):
-    tqdm_cls: type[tqdm.std.tqdm]
+    tqdm_cls: type[tqdm.std.tqdm] | None
     pbar: tqdm.std.tqdm | None
 
     def __init__(
@@ -33,7 +33,8 @@ class ProgressBarCallback(CallbackBase):
             "contrib.telegram",
             "contrib.bells",
         ]
-        | type[tqdm.std.tqdm] = "auto",
+        | type[tqdm.std.tqdm]
+        | None = "auto",
         early_stopping_callback: Any | None = None,
         **tqdm_kwargs: Any,
     ) -> None:
@@ -43,10 +44,12 @@ class ProgressBarCallback(CallbackBase):
         ----------
         tqdm_cls : Literal['auto', 'autonotebook', 'std', 'notebook', 'asyncio',
         'keras', 'dask', 'tk', 'gui', 'rich', 'contrib.slack', 'contrib.discord',
-        'contrib.telegram', 'contrib.bells'] or type[tqdm.std.tqdm], optional
-            The tqdm class or module name, by default &quot;auto&quot;
+        'contrib.telegram', 'contrib.bells'] or type[tqdm.std.tqdm] or None, optional
+            The tqdm class or module name, by default 'auto'
         early_stopping_callback : Any | None, optional
             The early stopping callback, by default None
+        **tqdm_kwargs : Any
+            The keyword arguments passed to the tqdm class initializer
 
             .. rubric:: Example
 
@@ -73,6 +76,8 @@ class ProgressBarCallback(CallbackBase):
 
     def _init(self, env: CallbackEnv) -> None:
         # create pbar on first call
+        if self.tqdm_cls is None:
+            return
         tqdm_kwargs = self.tqdm_kwargs.copy()
         tqdm_kwargs["total"] = env.end_iteration - env.begin_iteration
         self.pbar = self.tqdm_cls(**tqdm_kwargs)
@@ -80,7 +85,7 @@ class ProgressBarCallback(CallbackBase):
     def __call__(self, env: CallbackEnv) -> None:
         super().__call__(env)
         if self.pbar is None:
-            raise AssertionError("self.pbar is None")
+            return
 
         # update postfix
         if len(env.evaluation_result_list) > 0:

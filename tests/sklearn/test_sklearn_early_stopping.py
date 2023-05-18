@@ -12,7 +12,7 @@ from sklearn.datasets import load_diabetes
 from sklearn.metrics import mean_squared_error
 from sklearn.model_selection import train_test_split
 
-from lightgbm_callbacks import LGBMDartEarlyStoppingEstimator, ProgressBarCallback
+from lightgbm_callbacks import LGBMDartEarlyStoppingEstimator
 
 
 @parameterized_class(
@@ -57,6 +57,8 @@ class TestEarlyStoppingCallback(TestCase):
                     dart_early_stopping_method=method,  # type: ignore
                     random_state=0,
                     metric_idx=-1,
+                    tqdm_cls="auto",
+                    tqdm_kwargs={"desc": method},
                 )
                 for method in ["refit", "refit_like_save", "save", "none"]
             }
@@ -72,13 +74,12 @@ class TestEarlyStoppingCallback(TestCase):
                     X_train,
                     y_train,
                     eval_set=[(X_train, y_train), (X_test, y_test)],
-                    callbacks=[ProgressBarCallback(desc=k)],
+                    verbose=-1,
                 )
             else:
                 gbm.fit(
                     self.X,
                     self.y,
-                    callbacks=[ProgressBarCallback(desc=k)],
                 )
             y_pred = gbm.predict(X_test)
             y_preds[k] = y_pred
