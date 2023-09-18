@@ -2,6 +2,12 @@
 
 <!--next-version-placeholder-->
 
+## v0.1.2 (2023-09-18)
+
+### Fix
+
+* **deps:** Update dependency typing-extensions to v4.8.0 ([#92](https://github.com/34j/lightgbm-callbacks/issues/92)) ([`1ddaa6e`](https://github.com/34j/lightgbm-callbacks/commit/1ddaa6ee6e864a32cf93ad59aec423eb9943473f))
+
 ## v0.1.1 (2023-05-18)
 ### Fix
 * Do not mock `__class__` as it is `sklearn.clone()` incompatible ([#2](https://github.com/34j/lightgbm-callbacks/issues/2)) ([`b4142fe`](https://github.com/34j/lightgbm-callbacks/commit/b4142fe34fac00bc46527b49ab667e817222927d))
