@@ -2,6 +2,12 @@
 
 <!--next-version-placeholder-->
 
+## v0.1.5 (2023-10-23)
+
+### Fix
+
+* **deps:** Update dependency scikit-learn to v1.3.2 ([#112](https://github.com/34j/lightgbm-callbacks/issues/112)) ([`ba409e3`](https://github.com/34j/lightgbm-callbacks/commit/ba409e3c4882c7598240df868c4c037b8a7126d2))
+
 ## v0.1.4 (2023-10-11)
 
 ### Fix
