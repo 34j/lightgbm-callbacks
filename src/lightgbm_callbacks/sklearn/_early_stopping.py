@@ -220,7 +220,8 @@ class LGBMDartEarlyStoppingEstimator(LGBMEarlyStoppingEstimator):
         verbose: bool = False,
         min_delta: float | None = None,
         eval_metric: str
-        | Callable[[NDArray, NDArray], tuple[str, float, bool]] = "rmse",
+        | Callable[[NDArray, NDArray], tuple[str, float, bool]]
+        | None = None,
         test_size: float | int | None = None,
         train_size: float | int | None = None,
         random_state: int = 0,
