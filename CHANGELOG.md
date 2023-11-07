@@ -2,6 +2,12 @@
 
 <!--next-version-placeholder-->
 
+## v0.1.6 (2023-11-07)
+
+### Fix
+
+* Make `eval_metric` parameter optional ([#117](https://github.com/34j/lightgbm-callbacks/issues/117)) ([`5d4bf61`](https://github.com/34j/lightgbm-callbacks/commit/5d4bf6131a6fc0fe5f52323d82f1df5ee602ecf6))
+
 ## v0.1.5 (2023-10-23)
 
 ### Fix
