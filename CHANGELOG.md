@@ -2,6 +2,12 @@
 
 <!--next-version-placeholder-->
 
+## v0.1.7 (2023-11-07)
+
+### Fix
+
+* Fix `eval_metric` default for `LGBMDartEarlyStoppingEstimator` ([#118](https://github.com/34j/lightgbm-callbacks/issues/118)) ([`e545ed5`](https://github.com/34j/lightgbm-callbacks/commit/e545ed5979b65307d0571affbfb0661eb588145b))
+
 ## v0.1.6 (2023-11-07)
 
 ### Fix
