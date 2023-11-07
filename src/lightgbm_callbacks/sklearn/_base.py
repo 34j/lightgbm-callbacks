@@ -3,7 +3,6 @@ from typing import Any, Generic, TypeVar
 from sklearn.base import BaseEstimator, RegressorMixin
 
 TEstimator = TypeVar("TEstimator", bound=Any)
-type
 
 
 class EstimatorWrapperBase(BaseEstimator, RegressorMixin, Generic[TEstimator]):
