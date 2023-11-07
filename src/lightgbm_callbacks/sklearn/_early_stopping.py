@@ -35,7 +35,8 @@ class LGBMEarlyStoppingEstimator(EstimatorWrapperBase[LGBMModel]):
         verbose: bool = False,
         min_delta: float | None = None,
         eval_metric: str
-        | Callable[[NDArray, NDArray], tuple[str, float, bool]] = "rmse",
+        | Callable[[NDArray, NDArray], tuple[str, float, bool]]
+        | None = None,
         test_size: float | int | None = None,
         train_size: float | int | None = None,
         random_state: int = 0,
@@ -159,7 +160,8 @@ class LGBMEarlyStoppingEstimator(EstimatorWrapperBase[LGBMModel]):
             stratify=y if self.stratify else None,
         )
         fit_params["eval_set"] = [(X_train, y_train), (X_test, y_test)]
-        fit_params["eval_metric"] = self.eval_metric
+        if self.eval_metric is not None:
+            fit_params["eval_metric"] = self.eval_metric
         stopping_rounds = self.stopping_rounds or self.kwargs.get(
             "n_iter_no_change", None
         )
