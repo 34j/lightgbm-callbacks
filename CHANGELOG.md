@@ -2,6 +2,12 @@
 
 <!--next-version-placeholder-->
 
+## v0.1.8 (2023-12-10)
+
+### Fix
+
+* **deps:** Update dependency typing-extensions to v4.9.0 ([#131](https://github.com/34j/lightgbm-callbacks/issues/131)) ([`f03b40b`](https://github.com/34j/lightgbm-callbacks/commit/f03b40b996f6b774052f6791a788b812d5e2d944))
+
 ## v0.1.7 (2023-11-07)
 
 ### Fix
