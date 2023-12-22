@@ -2,6 +2,12 @@
 
 <!--next-version-placeholder-->
 
+## v0.1.9 (2023-12-22)
+
+### Fix
+
+* **deps:** Update dependency lightgbm to v4.2.0 ([#135](https://github.com/34j/lightgbm-callbacks/issues/135)) ([`15aa069`](https://github.com/34j/lightgbm-callbacks/commit/15aa069c25f59de4b8e91ab966532ccfe59aaa21))
+
 ## v0.1.8 (2023-12-10)
 
 ### Fix
