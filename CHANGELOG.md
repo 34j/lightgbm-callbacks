@@ -2,6 +2,12 @@
 
 <!--next-version-placeholder-->
 
+## v0.1.13 (2024-10-30)
+
+### Fix
+
+* **deps:** Update dependency tqdm to v4.66.6 ([#182](https://github.com/34j/lightgbm-callbacks/issues/182)) ([`4db5f4d`](https://github.com/34j/lightgbm-callbacks/commit/4db5f4d4ba86c866a43b95ed084629e59922fa9b))
+
 ## v0.1.12 (2024-02-26)
 
 ### Fix
