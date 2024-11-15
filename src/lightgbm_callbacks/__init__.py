@@ -1,4 +1,4 @@
-__version__ = "0.1.15"
+__version__ = "0.1.16"
 from ._base import CallbackBase
 from ._early_stopping_callback import DartEarlyStoppingCallback, EarlyStoppingCallback
 from ._tqdm_callback import ProgressBarCallback
