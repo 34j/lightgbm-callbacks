@@ -17,24 +17,26 @@ class ProgressBarCallback(CallbackBase):
 
     def __init__(
         self,
-        tqdm_cls: Literal[
-            "auto",
-            "autonotebook",
-            "std",
-            "notebook",
-            "asyncio",
-            "keras",
-            "dask",
-            "tk",
-            "gui",
-            "rich",
-            "contrib.slack",
-            "contrib.discord",
-            "contrib.telegram",
-            "contrib.bells",
-        ]
-        | type[tqdm.std.tqdm]
-        | None = "auto",
+        tqdm_cls: (
+            Literal[
+                "auto",
+                "autonotebook",
+                "std",
+                "notebook",
+                "asyncio",
+                "keras",
+                "dask",
+                "tk",
+                "gui",
+                "rich",
+                "contrib.slack",
+                "contrib.discord",
+                "contrib.telegram",
+                "contrib.bells",
+            ]
+            | type[tqdm.std.tqdm]
+            | None
+        ) = "auto",
         early_stopping_callback: Any | None = None,
         **tqdm_kwargs: Any,
     ) -> None:
