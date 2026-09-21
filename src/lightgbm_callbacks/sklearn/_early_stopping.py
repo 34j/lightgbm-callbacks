@@ -24,43 +24,45 @@ class LGBMEarlyStoppingEstimator(EstimatorWrapperBase[LGBMModel]):
         self,
         estimator: LGBMModel,
         *,
-        early_stopping_factory: Callable[
-            [int, bool, bool, float | list[float]], Callable[[CallbackEnv], None]
-        ]
-        | Callable[
-            [int, bool, bool], Callable[[CallbackEnv], None]
-        ] = DartEarlyStoppingCallback,
+        early_stopping_factory: (
+            Callable[
+                [int, bool, bool, float | list[float]], Callable[[CallbackEnv], None]
+            ]
+            | Callable[[int, bool, bool], Callable[[CallbackEnv], None]]
+        ) = DartEarlyStoppingCallback,
         stopping_rounds: int | None = None,
         first_metric_only: bool = False,
         verbose: bool = False,
         min_delta: float | None = None,
-        eval_metric: str
-        | Callable[[NDArray, NDArray], tuple[str, float, bool]]
-        | None = None,
+        eval_metric: (
+            str | Callable[[NDArray, NDArray], tuple[str, float, bool]] | None
+        ) = None,
         test_size: float | int | None = None,
         train_size: float | int | None = None,
         random_state: int = 0,
         shuffle: bool = True,
         stratify: bool = False,
         split_enabled: bool = True,
-        tqdm_cls: Literal[
-            "auto",
-            "autonotebook",
-            "std",
-            "notebook",
-            "asyncio",
-            "keras",
-            "dask",
-            "tk",
-            "gui",
-            "rich",
-            "contrib.slack",
-            "contrib.discord",
-            "contrib.telegram",
-            "contrib.bells",
-        ]
-        | type[tqdm.std.tqdm]
-        | None = None,
+        tqdm_cls: (
+            Literal[
+                "auto",
+                "autonotebook",
+                "std",
+                "notebook",
+                "asyncio",
+                "keras",
+                "dask",
+                "tk",
+                "gui",
+                "rich",
+                "contrib.slack",
+                "contrib.discord",
+                "contrib.telegram",
+                "contrib.bells",
+            ]
+            | type[tqdm.std.tqdm]
+            | None
+        ) = None,
         tqdm_kwargs: dict[str, Any] | None = None,
         **kwargs: Any,
     ) -> None:
@@ -209,19 +211,19 @@ class LGBMDartEarlyStoppingEstimator(LGBMEarlyStoppingEstimator):
         self,
         estimator: LGBMModel,
         *,
-        early_stopping_factory: Callable[
-            [int, bool, bool, float | list[float]], Callable[[CallbackEnv], None]
-        ]
-        | Callable[
-            [int, bool, bool], Callable[[CallbackEnv], None]
-        ] = DartEarlyStoppingCallback,
+        early_stopping_factory: (
+            Callable[
+                [int, bool, bool, float | list[float]], Callable[[CallbackEnv], None]
+            ]
+            | Callable[[int, bool, bool], Callable[[CallbackEnv], None]]
+        ) = DartEarlyStoppingCallback,
         stopping_rounds: int | None = None,
         first_metric_only: bool = False,
         verbose: bool = False,
         min_delta: float | None = None,
-        eval_metric: str
-        | Callable[[NDArray, NDArray], tuple[str, float, bool]]
-        | None = None,
+        eval_metric: (
+            str | Callable[[NDArray, NDArray], tuple[str, float, bool]] | None
+        ) = None,
         test_size: float | int | None = None,
         train_size: float | int | None = None,
         random_state: int = 0,
@@ -230,24 +232,26 @@ class LGBMDartEarlyStoppingEstimator(LGBMEarlyStoppingEstimator):
         split_enabled: bool = True,
         dart_early_stopping_method: Literal["save", "refit", "none"] = "save",
         metric_idx: int = -1,
-        tqdm_cls: Literal[
-            "auto",
-            "autonotebook",
-            "std",
-            "notebook",
-            "asyncio",
-            "keras",
-            "dask",
-            "tk",
-            "gui",
-            "rich",
-            "contrib.slack",
-            "contrib.discord",
-            "contrib.telegram",
-            "contrib.bells",
-        ]
-        | type[tqdm.std.tqdm]
-        | None = None,
+        tqdm_cls: (
+            Literal[
+                "auto",
+                "autonotebook",
+                "std",
+                "notebook",
+                "asyncio",
+                "keras",
+                "dask",
+                "tk",
+                "gui",
+                "rich",
+                "contrib.slack",
+                "contrib.discord",
+                "contrib.telegram",
+                "contrib.bells",
+            ]
+            | type[tqdm.std.tqdm]
+            | None
+        ) = None,
         tqdm_kwargs: dict[str, Any] | None = None,
         **kwargs: Any,
     ) -> None:
