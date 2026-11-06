@@ -29,9 +29,7 @@ class TestProgressBarCallback(TestCase):
         self.X, self.y = load_diabetes(return_X_y=True)
 
     def test_fit(self) -> None:
-        X_train, X_test, y_train, y_test = train_test_split(
-            self.X, self.y, random_state=0
-        )
+        X_train, X_test, y_train, y_test = train_test_split(self.X, self.y, random_state=0)
         clf = LGBMRegressor(
             n_estimators=self.n_estimators,
             learning_rate=1e-1,
@@ -54,9 +52,7 @@ class TestProgressBarCallback(TestCase):
         self.assertEqual(callback.pbar.n, self.n_estimators)
 
     def test_early_stopping(self) -> None:
-        X_train, X_test, y_train, y_test = train_test_split(
-            self.X, self.y, random_state=0
-        )
+        X_train, X_test, y_train, y_test = train_test_split(self.X, self.y, random_state=0)
         clf = LGBMRegressor(
             n_estimators=self.n_estimators,
             learning_rate=1e-1,

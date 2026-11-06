@@ -1,14 +1,14 @@
 from __future__ import annotations
 
 import warnings
-from typing import Any, Callable, Literal
+from collections.abc import Callable
+from typing import Any, Literal, Self
 
 import tqdm
 from lightgbm import LGBMModel, log_evaluation
 from lightgbm.callback import CallbackEnv
 from numpy.typing import NDArray
 from sklearn.model_selection import train_test_split
-from typing_extensions import Self
 
 from lightgbm_callbacks import DartEarlyStoppingCallback
 
@@ -27,16 +27,12 @@ class LGBMEarlyStoppingEstimator(EstimatorWrapperBase[LGBMModel]):
         early_stopping_factory: Callable[
             [int, bool, bool, float | list[float]], Callable[[CallbackEnv], None]
         ]
-        | Callable[
-            [int, bool, bool], Callable[[CallbackEnv], None]
-        ] = DartEarlyStoppingCallback,
+        | Callable[[int, bool, bool], Callable[[CallbackEnv], None]] = DartEarlyStoppingCallback,
         stopping_rounds: int | None = None,
         first_metric_only: bool = False,
         verbose: bool = False,
         min_delta: float | None = None,
-        eval_metric: str
-        | Callable[[NDArray, NDArray], tuple[str, float, bool]]
-        | None = None,
+        eval_metric: str | Callable[[NDArray, NDArray], tuple[str, float, bool]] | None = None,
         test_size: float | int | None = None,
         train_size: float | int | None = None,
         random_state: int = 0,
@@ -64,7 +60,8 @@ class LGBMEarlyStoppingEstimator(EstimatorWrapperBase[LGBMModel]):
         tqdm_kwargs: dict[str, Any] | None = None,
         **kwargs: Any,
     ) -> None:
-        """LightGBM wrapper that does early stopping with sklearn.train_test_split.
+        """
+        LightGBM wrapper that does early stopping with sklearn.train_test_split.
 
         Parameters
         ----------
@@ -119,6 +116,7 @@ class LGBMEarlyStoppingEstimator(EstimatorWrapperBase[LGBMModel]):
             The keyword arguments passed to the tqdm class initializer, by default None
         **kwargs : Any
             Other parameters passed to the estimator.
+
         """
         self.estimator = estimator
         self.early_stopping_factory = early_stopping_factory
@@ -145,7 +143,7 @@ class LGBMEarlyStoppingEstimator(EstimatorWrapperBase[LGBMModel]):
             ]:
                 warnings.warn(f"Unknown parameter: {key}: {value}")
 
-    def fit(self, X, y=None, **fit_params) -> Self:  # type: ignore
+    def fit(self, X, y=None, **fit_params) -> Self:
         """Fit the model according to the given training data."""
         if not self.split_enabled:
             self.estimator.fit(X, y, **fit_params)
@@ -162,9 +160,7 @@ class LGBMEarlyStoppingEstimator(EstimatorWrapperBase[LGBMModel]):
         fit_params["eval_set"] = [(X_train, y_train), (X_test, y_test)]
         if self.eval_metric is not None:
             fit_params["eval_metric"] = self.eval_metric
-        stopping_rounds = self.stopping_rounds or self.kwargs.get(
-            "n_iter_no_change", None
-        )
+        stopping_rounds = self.stopping_rounds or self.kwargs.get("n_iter_no_change", None)
         if stopping_rounds is not None:
             try:
                 early_stopping = self.early_stopping_factory(
@@ -175,8 +171,10 @@ class LGBMEarlyStoppingEstimator(EstimatorWrapperBase[LGBMModel]):
                 )
             except TypeError:
                 early_stopping = self.early_stopping_factory(
-                    stopping_rounds, self.first_metric_only, self.verbose  # type: ignore
-                )
+                    stopping_rounds,
+                    self.first_metric_only,
+                    self.verbose,
+                )  # ty: ignore[missing-argument]
             fit_params["callbacks"] = [
                 early_stopping,
                 log_evaluation(self.verbose),
@@ -201,7 +199,8 @@ class LGBMEarlyStoppingEstimator(EstimatorWrapperBase[LGBMModel]):
 
 
 class LGBMDartEarlyStoppingEstimator(LGBMEarlyStoppingEstimator):
-    """LightGBM wrapper that does early stopping with sklearn.train_test_split
+    """
+    LightGBM wrapper that does early stopping with sklearn.train_test_split
     and uses ``LGBMDartEarlyStoppingSimpleWrapper`` to support early stopping in dart mode.
     """
 
@@ -212,16 +211,12 @@ class LGBMDartEarlyStoppingEstimator(LGBMEarlyStoppingEstimator):
         early_stopping_factory: Callable[
             [int, bool, bool, float | list[float]], Callable[[CallbackEnv], None]
         ]
-        | Callable[
-            [int, bool, bool], Callable[[CallbackEnv], None]
-        ] = DartEarlyStoppingCallback,
+        | Callable[[int, bool, bool], Callable[[CallbackEnv], None]] = DartEarlyStoppingCallback,
         stopping_rounds: int | None = None,
         first_metric_only: bool = False,
         verbose: bool = False,
         min_delta: float | None = None,
-        eval_metric: str
-        | Callable[[NDArray, NDArray], tuple[str, float, bool]]
-        | None = None,
+        eval_metric: str | Callable[[NDArray, NDArray], tuple[str, float, bool]] | None = None,
         test_size: float | int | None = None,
         train_size: float | int | None = None,
         random_state: int = 0,
@@ -251,7 +246,8 @@ class LGBMDartEarlyStoppingEstimator(LGBMEarlyStoppingEstimator):
         tqdm_kwargs: dict[str, Any] | None = None,
         **kwargs: Any,
     ) -> None:
-        """LightGBM wrapper that does early stopping with sklearn.train_test_split
+        """
+        LightGBM wrapper that does early stopping with sklearn.train_test_split
         and uses ``LGBMDartEarlyStoppingSimpleWrapper`` to support early stopping in dart mode.
 
         Parameters
@@ -311,6 +307,7 @@ class LGBMDartEarlyStoppingEstimator(LGBMEarlyStoppingEstimator):
             The keyword arguments passed to the tqdm class initializer, by default None
         **kwargs : Any
             Other parameters passed to the estimator.
+
         """
         super().__init__(
             estimator,
@@ -333,9 +330,9 @@ class LGBMDartEarlyStoppingEstimator(LGBMEarlyStoppingEstimator):
         self.dart_early_stopping_method = dart_early_stopping_method
         self.metric_idx = metric_idx
 
-    def fit(self, X, y=None, **fit_params) -> Self:  # type: ignore
+    def fit(self, X, y=None, **fit_params) -> Self:
         self.estimator = LGBMDartEarlyStoppingSimpleWrapper(
-            self.estimator,
+            self.estimator,  # ty: ignore[invalid-argument-type]
             method=self.dart_early_stopping_method,
             metric_idx=self.metric_idx,
         )

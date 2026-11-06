@@ -48,7 +48,7 @@ exclude_patterns: list[str] = []
 # The theme to use for HTML and HTML Help pages.  See the documentation for
 # a list of builtin themes.
 #
-html_theme = "sphinx_rtd_theme"
+html_theme = "furo"
 
 # Add any paths that contain custom static files (such as style sheets) here,
 # relative to this directory. They are copied after the builtin static files,
@@ -63,15 +63,13 @@ def run_apidoc(_: Any) -> None:
     docs_path = Path(__file__).parent
     module_path = docs_path.parent / "src" / "lightgbm_callbacks"
 
-    apidoc.main(
-        [
-            "--force",
-            "--module-first",
-            "-o",
-            docs_path.as_posix(),
-            module_path.as_posix(),
-        ]
-    )
+    apidoc.main([
+        "--force",
+        "--module-first",
+        "-o",
+        docs_path.as_posix(),
+        module_path.as_posix(),
+    ])
 
 
 def setup(app: Sphinx) -> None:
