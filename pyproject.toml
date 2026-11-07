@@ -105,6 +105,7 @@ lint.extend-per-file-ignores."tests/**/*" = [
   "UP046",
   "UP047",
 ]
+lint.extend-per-file-ignores."tests/conftest.py" = [ "S404", "S607" ]
 
 [tool.pyproject-fmt]
 max_supported_python = "3.14"
