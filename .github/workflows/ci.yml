@@ -17,10 +17,6 @@ jobs:
       attestations: write
       contents: write
       id-token: write
-    with:
-      sync_command: |
-        if [[ "$RUNNER_OS" == "macOS" ]]; then brew install libomp; fi
-        uv sync --all-extras --frozen
   publish:
     if: needs.ci.outputs.released == 'true'
     needs: ci
