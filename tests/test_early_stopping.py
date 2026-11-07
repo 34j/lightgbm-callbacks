@@ -3,7 +3,6 @@ from __future__ import annotations
 from unittest import TestCase
 
 import tqdm
-import tqdm.rich
 from lightgbm import LGBMRegressor, early_stopping
 from parameterized import parameterized_class
 from sklearn.datasets import load_diabetes
@@ -30,18 +29,14 @@ class TestEarlyStoppingCallback(TestCase):
 
     def test_normal_both_early_stopping_preds(self) -> None:
         """test our early stopping callback is consistent with the original early stopping"""
-        X_train, X_test, y_train, y_test = train_test_split(
-            self.X, self.y, random_state=0
-        )
+        X_train, X_test, y_train, y_test = train_test_split(self.X, self.y, random_state=0)
         gbm = LGBMRegressor(
             n_estimators=self.n_estimators,
             learning_rate=1e-1,
             metric=self.metric,
             verbose=-1,
         )
-        early_stopping_callback = EarlyStoppingCallback(
-            stopping_rounds=50, first_metric_only=True
-        )
+        early_stopping_callback = EarlyStoppingCallback(stopping_rounds=50, first_metric_only=True)
         gbm.fit(
             X_train,
             y_train,
@@ -77,9 +72,7 @@ class TestEarlyStoppingCallback(TestCase):
     def test_normal_early_stopping_dart_preds(self) -> None:
         """test that early stopping results in the same model as normal training
         with the same number of iterations"""
-        X_train, X_test, y_train, y_test = train_test_split(
-            self.X, self.y, random_state=0
-        )
+        X_train, X_test, y_train, y_test = train_test_split(self.X, self.y, random_state=0)
         gbm = LGBMRegressor(
             n_estimators=self.n_estimators,
             learning_rate=1e-1,
@@ -87,9 +80,7 @@ class TestEarlyStoppingCallback(TestCase):
             verbose=-1,
             boosting_type="dart",
         )
-        early_stopping_callback = EarlyStoppingCallback(
-            stopping_rounds=50, first_metric_only=True
-        )
+        early_stopping_callback = EarlyStoppingCallback(stopping_rounds=50, first_metric_only=True)
         gbm.fit(
             X_train,
             y_train,
@@ -113,9 +104,7 @@ class TestEarlyStoppingCallback(TestCase):
         # but better than no early stopping
 
     def test_dart_early_stopping_not_final_iteration_preds(self) -> None:
-        X_train, X_test, y_train, y_test = train_test_split(
-            self.X, self.y, random_state=0
-        )
+        X_train, X_test, y_train, y_test = train_test_split(self.X, self.y, random_state=0)
         gbm = LGBMRegressor(
             n_estimators=self.n_estimators,
             learning_rate=1e-1,
@@ -163,9 +152,7 @@ class TestEarlyStoppingCallback(TestCase):
             )
 
     def test_dart_early_stopping_final_iteration_preds(self) -> None:
-        X_train, X_test, y_train, y_test = train_test_split(
-            self.X, self.y, random_state=0
-        )
+        X_train, X_test, y_train, y_test = train_test_split(self.X, self.y, random_state=0)
         n_estimators = 10
         gbm = LGBMRegressor(
             n_estimators=n_estimators,

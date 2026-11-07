@@ -9,9 +9,7 @@ from lightgbm_callbacks.sklearn import EstimatorWrapperBase
 
 class TestEstimatorWrapperBase(TestCase):
     def test_isinstance(self) -> None:
-        self.assertIsInstance(
-            EstimatorWrapperBase(LGBMRegressor()), EstimatorWrapperBase
-        )
+        self.assertIsInstance(EstimatorWrapperBase(LGBMRegressor()), EstimatorWrapperBase)
         self.assertNotIsInstance(EstimatorWrapperBase(LGBMRegressor()), LGBMRegressor)
 
     def test_issubclass(self) -> None:

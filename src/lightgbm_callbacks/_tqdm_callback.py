@@ -38,7 +38,8 @@ class ProgressBarCallback(CallbackBase):
         early_stopping_callback: Any | None = None,
         **tqdm_kwargs: Any,
     ) -> None:
-        """Progress bar callback for LightGBM training.
+        """
+        Progress bar callback for LightGBM training.
 
         Parameters
         ----------
@@ -57,15 +58,16 @@ class ProgressBarCallback(CallbackBase):
                 early_stopping_callback = early_stopping(stopping_rounds=50)
                 callbacks = [
                     early_stopping_callback,
-                    ProgressBarCallback(early_stopping_callback=early_stopping_callback)
+                    ProgressBarCallback(early_stopping_callback=early_stopping_callback),
                 ]
                 estimator.fit(X_train, y_train, eval_set=[(X_test, y_test)], callbacks=callbacks)
+
         """
         self.order = 40
         self.before_iteration = False
         if isinstance(tqdm_cls, str):
             tqdm_module = importlib.import_module(f"tqdm.{tqdm_cls}")
-            self.tqdm_cls = getattr(tqdm_module, "tqdm")
+            self.tqdm_cls = tqdm_module.tqdm
         else:
             self.tqdm_cls = tqdm_cls
         self.early_stopping_callback = early_stopping_callback
@@ -88,32 +90,28 @@ class ProgressBarCallback(CallbackBase):
             return
 
         # update postfix
-        if len(env.evaluation_result_list) > 0:
+        if len(env.evaluation_result_list) > 0:  # ty: ignore[invalid-argument-type]
             # If OrderedDict is not used, the order of display is disjointed and slightly difficult to see.
             # https://github.com/microsoft/LightGBM/blob/a97c444b4cf9d2755bd888911ce65ace1fe13e4b/python-package/lightgbm/callback.py#L56-66
             if self.early_stopping_callback is not None:
-                postfix = OrderedDict(
-                    [
-                        (
-                            f"{entry[0]}'s {entry[1]}",
-                            f"{entry[2]:g}{'=' if entry[2] == best_score else ('>' if cmp_op else '<')}"
-                            f"{best_score:g}@{best_iter}it",
-                        )
-                        for entry, cmp_op, best_score, best_iter in zip(
-                            env.evaluation_result_list,
-                            self.early_stopping_callback.cmp_op,
-                            self.early_stopping_callback.best_score,
-                            self.early_stopping_callback.best_iter,
-                        )
-                    ]
-                )
+                postfix = OrderedDict([
+                    (
+                        f"{entry[0]}'s {entry[1]}",
+                        f"{entry[2]:g}{'=' if entry[2] == best_score else ('>' if cmp_op else '<')}"
+                        f"{best_score:g}@{best_iter}it",
+                    )
+                    for entry, cmp_op, best_score, best_iter in zip(
+                        env.evaluation_result_list,  # ty: ignore[invalid-argument-type]
+                        self.early_stopping_callback.cmp_op,
+                        self.early_stopping_callback.best_score,
+                        self.early_stopping_callback.best_iter,
+                    )
+                ])
             else:
-                postfix = OrderedDict(
-                    [
-                        (f"{entry[0]}'s {entry[1]}", f"{entry[2]:g}")
-                        for entry in env.evaluation_result_list
-                    ]
-                )
+                postfix = OrderedDict([
+                    (f"{entry[0]}'s {entry[1]}", f"{entry[2]:g}")
+                    for entry in env.evaluation_result_list  # ty: ignore[not-iterable]
+                ])
             self.pbar.set_postfix(ordered_dict=postfix, refresh=False)
 
         self.pbar.n += 1

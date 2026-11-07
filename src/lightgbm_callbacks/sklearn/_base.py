@@ -9,12 +9,14 @@ class EstimatorWrapperBase(BaseEstimator, RegressorMixin, Generic[TEstimator]):
     """A base class for estimator wrappers that delegates all attributes to the wrapped estimator."""
 
     def __init__(self, estimator: TEstimator) -> None:
-        """A base class for estimator wrappers that delegates all attributes to the wrapped estimator.
+        """
+        A base class for estimator wrappers that delegates all attributes to the wrapped estimator.
 
         Parameters
         ----------
         estimator : Any
             The estimator to be wrapped.
+
         """
         self.estimator = estimator
 

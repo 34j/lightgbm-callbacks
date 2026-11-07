@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import os
+import shutil
 from unittest import TestCase
 
 import lightgbm as lgb
@@ -8,7 +9,6 @@ import matplotlib.pyplot as plt
 import matplotlib.style
 import matplotx.styles
 import tqdm
-import tqdm.rich
 from lightgbm import LGBMRegressor
 from parameterized import parameterized_class
 from sklearn import clone
@@ -43,14 +43,12 @@ class TestEarlyStoppingCallback(TestCase):
         clone(gbm)
 
     def test_performance(self) -> None:
-        DEBUG = not IS_GITHUB_CI
+        DEBUG = not IS_GITHUB_CI and shutil.which("dot") is not None
         if DEBUG:
             self.n_estimators = 1000
             matplotlib.style.use(matplotx.styles.dracula)
 
-        X_train, X_test, y_train, y_test = train_test_split(
-            self.X, self.y, random_state=0
-        )
+        X_train, X_test, y_train, y_test = train_test_split(self.X, self.y, random_state=0)
         gbms = {
             "baseline": LGBMRegressor(
                 n_estimators=self.n_estimators,
@@ -60,26 +58,24 @@ class TestEarlyStoppingCallback(TestCase):
                 boosting_type="dart",
             )
         }
-        gbms.update(
-            {
-                method: LGBMDartEarlyStoppingEstimator(
-                    LGBMRegressor(
-                        n_estimators=self.n_estimators,
-                        learning_rate=1e-1,
-                        metric=self.metric,
-                        verbose=-1,
-                        boosting_type="dart",
-                    ),
-                    stopping_rounds=30,
-                    dart_early_stopping_method=method,  # type: ignore
-                    random_state=0,
-                    metric_idx=-1,
-                    tqdm_cls="auto",
-                    tqdm_kwargs={"desc": method},
-                )
-                for method in ["refit", "refit_like_save", "save", "none"]
-            }
-        )
+        gbms.update({
+            method: LGBMDartEarlyStoppingEstimator(
+                LGBMRegressor(
+                    n_estimators=self.n_estimators,
+                    learning_rate=1e-1,
+                    metric=self.metric,
+                    verbose=-1,
+                    boosting_type="dart",
+                ),
+                stopping_rounds=30,
+                dart_early_stopping_method=method,  # type: ignore
+                random_state=0,
+                metric_idx=-1,
+                tqdm_cls="auto",
+                tqdm_kwargs={"desc": method},
+            )
+            for method in ["refit", "refit_like_save", "save", "none"]
+        })
 
         y_preds = {}
         scores = {}
@@ -101,11 +97,11 @@ class TestEarlyStoppingCallback(TestCase):
             scores[k] = mean_squared_error(y_test, y_pred)
             if isinstance(gbm, LGBMDartEarlyStoppingEstimator):
                 gbm = gbm.estimator
-            lgb.plot_importance(gbm)
-            lgb.plot_split_value_histogram(gbm, feature=0)
-            lgb.plot_metric(gbm, metric="l2", title=f"Metric during training ({k})")
+            lgb.plot_importance(gbm)  # ty: ignore[invalid-argument-type]
+            lgb.plot_split_value_histogram(gbm, feature=0)  # ty: ignore[invalid-argument-type]
+            lgb.plot_metric(gbm, metric="l2", title=f"Metric during training ({k})")  # ty: ignore[invalid-argument-type]
             if DEBUG:
-                lgb.plot_tree(gbm, tree_index=0)
+                lgb.plot_tree(gbm, tree_index=0)  # ty: ignore[invalid-argument-type]
             if not DEBUG:
                 plt.close("all")
             # There seem to be no way to get the actual trained number of trees

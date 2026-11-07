@@ -2,10 +2,9 @@ from __future__ import annotations
 
 import warnings
 from logging import getLogger
-from typing import Any, Literal
+from typing import Any, Literal, Self
 
 from lightgbm import LGBMModel
-from typing_extensions import Self
 
 from .._early_stopping_callback import DartEarlyStoppingCallback, EarlyStoppingCallback
 from ._base import EstimatorWrapperBase
@@ -23,7 +22,8 @@ class LGBMDartEarlyStoppingSimpleWrapper(EstimatorWrapperBase[LGBMModel]):
         method: Literal["save", "refit", "none"] = "save",
         metric_idx: int = -1,
     ) -> None:
-        """A simple wrapper for dart LGBMModel that returns the best model after early stopping.
+        """
+        A simple wrapper for dart LGBMModel that returns the best model after early stopping.
 
         Parameters
         ----------
@@ -36,12 +36,13 @@ class LGBMDartEarlyStoppingSimpleWrapper(EstimatorWrapperBase[LGBMModel]):
             "none": Do nothing and return the original estimator.
         metric_idx : int, optional
             The index of the metric to be used for early stopping, by default 0
+
         """
         self.method = method
         self.metric_idx = metric_idx
         super().__init__(estimator)
 
-    def fit(self, X, y, **fit_params: Any) -> Self:  # type: ignore
+    def fit(self, X, y, **fit_params: Any) -> Self:
         early_stopping_callback_candidates = [
             callback
             for callback in fit_params.get("callbacks", [])
@@ -57,8 +58,7 @@ class LGBMDartEarlyStoppingSimpleWrapper(EstimatorWrapperBase[LGBMModel]):
 
         if len(early_stopping_callback_candidates) > 1:
             warnings.warn(
-                "Multiple EarlyStoppingCallback objects are found. "
-                "Only the first one is used.",
+                "Multiple EarlyStoppingCallback objects are found. Only the first one is used.",
                 UserWarning,
             )
         early_stopping_callback = early_stopping_callback_candidates[0]
@@ -80,9 +80,7 @@ class LGBMDartEarlyStoppingSimpleWrapper(EstimatorWrapperBase[LGBMModel]):
                     f"Got {type(early_stopping_callback)}"
                 )
             self.estimator.fit(X, y, **fit_params)
-            self.estimator._Booster = early_stopping_callback.best_model[
-                self.metric_idx
-            ]
+            self.estimator._Booster = early_stopping_callback.best_model[self.metric_idx]
 
         else:
             raise ValueError(f"Unknown method: {self.method}")

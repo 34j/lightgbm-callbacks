@@ -11,11 +11,11 @@ from .sklearn import (
 
 __all__ = [
     "CallbackBase",
-    "ProgressBarCallback",
-    "EarlyStoppingCallback",
     "DartEarlyStoppingCallback",
-    "LGBMEarlyStoppingEstimator",
-    "LGBMDartEarlyStoppingEstimator",
+    "EarlyStoppingCallback",
     "EstimatorWrapperBase",
+    "LGBMDartEarlyStoppingEstimator",
     "LGBMDartEarlyStoppingSimpleWrapper",
+    "LGBMEarlyStoppingEstimator",
+    "ProgressBarCallback",
 ]
