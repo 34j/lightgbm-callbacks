@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import os
+import shutil
 from unittest import TestCase
 
 import lightgbm as lgb
@@ -42,7 +43,7 @@ class TestEarlyStoppingCallback(TestCase):
         clone(gbm)
 
     def test_performance(self) -> None:
-        DEBUG = not IS_GITHUB_CI
+        DEBUG = not IS_GITHUB_CI and shutil.which("dot") is not None
         if DEBUG:
             self.n_estimators = 1000
             matplotlib.style.use(matplotx.styles.dracula)
